@@ -6,7 +6,7 @@ In my experience, JDK-11 performs extremely faster than BouncyCastle, since the 
 
 Snippets of JMH output on my laptop:
 
-* JDK-11
+* JDK-11 (version 11.0.5)
 ```
 Benchmark                  Mode  Cnt     Score    Error  Units
 JdkVsBcBenchmark.aes_jdk  thrpt   30  3395.140 ± 42.616  ops/s
@@ -18,7 +18,15 @@ Benchmark                 Mode  Cnt    Score   Error  Units
 JdkVsBcBenchmark.aes_bc  thrpt   30  132.869 ± 0.842  ops/s
 ```
 
-The results show that JDK-11 implementation of AES is over 25 times faster than BouncyCastle. 
+The results show that JDK-11 implementation of AES is over 25 times faster than BouncyCastle.
+
+* Results for JDK-8 (version 1.8.0_231)
+```
+Benchmark                  Mode  Cnt    Score   Error  Units
+JdkVsBcBenchmark.aes_jdk  thrpt   30  346.398 ± 1.313  ops/s
+```
+
+Compared to JDK-11, it is very slow (though still three times faster than BouncyCastle). Two posts on StackOverflow ([link-1](https://stackoverflow.com/q/25505870/459391) and [link-2](https://stackoverflow.com/q/23058309/459391)) discuss whether JDK-8 exploits AES-NI instruction set by default (apparently, it does!). I also explicitly tested the program with the corresponding JVM flags (`-XX:+UseAES -XX:+UseAESIntrinsics`), but to no avail: The result was the same.
 
 ## Comparison with OpenSSL
 JDK-11 performs ~ 3395 operations per second, where each operation corresponds to encryption 1 MB of data using AES-CTR. That is, encryption speed is about 3.3 GB/s. Comparison with OpenSSL is indeed insightful:
